@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import logo from './logo.svg';
-import './App.css';
+import './	css';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import HomePage from './pages/homepage/homepage.component';
 import ShopPage from './pages/shop/shop.component';
@@ -14,50 +14,41 @@ import { selectShopAll } from './redux/shop/shop.selector';
 import { selectCurrentUser } from './redux/user/user.selector';
 import { createStructuredSelector } from 'reselect';
 
-class App extends React.Component {
-	unsubscribeFromAuth = null;
-	componentDidMount() {
-		const { checkUserSession } = this.props;
-		checkUserSession();
-		// 	console.log(this.props);
-		// const { currentUser, setCurrentUser, collectionArray } = this.props;
-		// 	this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
-		// 		if (userAuth) {
-		// 			const userRef = await createUserProfileDocument(userAuth);
-		// 			userRef.onSnapshot((snapShot) => {
-		// 				setCurrentUser({
-		// 					id: snapShot.id,
-		// 					...snapShot.data()
-		// 				});
-		// 			});
-		// 		}
-		// 		setCurrentUser(userAuth);
-		// 		// addCollectionAndDocuments('collection', collectionArray.map(({ title, items }) => ({ title, items })));
-		// 	});
-	}
+const App = ({ checkUserSession }) => {
+	useEffect(
+		() => {
+			checkUserSession();
+		},
+		[ checkUserSession ]
+	);
+	// 	console.log(this.props);
+	// const { currentUser, setCurrentUser, collectionArray } = this.props;
+	// 	this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
+	// 		if (userAuth) {
+	// 			const userRef = await createUserProfileDocument(userAuth);
+	// 			userRef.onSnapshot((snapShot) => {
+	// 				setCurrentUser({
+	// 					id: snapShot.id,
+	// 					...snapShot.data()
+	// 				});
+	// 			});
+	// 		}
+	// 		setCurrentUser(userAuth);
+	// 		// addCollectionAndDocuments('collection', collectionArray.map(({ title, items }) => ({ title, items })));
+	// 	});
 
-	componentWillUnmount() {
-		this.unsubscribeFromAuth();
-	}
-
-	render() {
-		return (
-			<div>
-				<Header />
-				<Switch>
-					<Route exact path="/" component={HomePage} />
-					<Route path="/shop" component={ShopPage} />
-					<Route exact path="/checkout" component={CheckOutPage} />
-					<Route
-						exact
-						path="/login"
-						render={() => (this.props.currentUser ? <Redirect to="/" /> : <SignInSignUpPage />)}
-					/>
-				</Switch>
-			</div>
-		);
-	}
-}
+	return (
+		<div>
+			<Header />
+			<Switch>
+				<Route exact path="/" component={HomePage} />
+				<Route path="/shop" component={ShopPage} />
+				<Route exact path="/checkout" component={CheckOutPage} />
+				<Route exact path="/login" component={SignInSignUpPage} />
+			</Switch>
+		</div>
+	);
+};
 
 const mapStateToProps = createStructuredSelector({
 	currentUser: selectCurrentUser,

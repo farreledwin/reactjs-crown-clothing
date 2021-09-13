@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { Route } from 'react-router-dom';
 import CollectionOverview from '../../components/collection-overview/collection-overview.component';
@@ -21,33 +21,32 @@ const CategoryPageWithSpinner = withSpinner(CategoryPage);
 
 const CollectionOverviewWithSpinner = withSpinner(CollectionOverview);
 
-class ShopPage extends React.Component {
-	componentDidMount() {
-		const { fetchCollectionsStart } = this.props;
-		fetchCollectionsStart();
-		// const collectionRef = firestore.collection('collection');
-		// collectionRef.onSnapshot(async (snapshot) => {
-		// 	const collectionMap = convertCollectionsSnapshotToMap(snapshot);
-		// 	updateCollections(collectionMap);
-		// });
-	}
-	render() {
-		const { match, isFetching, selectisCollectionLoaded } = this.props;
-		return (
-			<div className="shop-page">
-				<Route
-					exact
-					path={`${match.path}`}
-					render={(props) => <CollectionOverviewWithSpinner isLoading={isFetching} {...props} />}
-				/>
-				<Route
-					path={`/shop/:categoryId`}
-					render={(props) => <CategoryPageWithSpinner isLoading={!selectisCollectionLoaded} {...props} />}
-				/>
-			</div>
-		);
-	}
-}
+const ShopPage = ({ fetchCollectionsStart, match, isFetching, selectisCollectionLoaded }) => {
+	useEffect(
+		() => {
+			fetchCollectionsStart();
+		},
+		[ fetchCollectionsStart ]
+	);
+	// const collectionRef = firestore.collection('collection');
+	// collectionRef.onSnapshot(async (snapshot) => {
+	// 	const collectionMap = convertCollectionsSnapshotToMap(snapshot);
+	// 	updateCollections(collectionMap);
+	// });
+	return (
+		<div className="shop-page">
+			<Route
+				exact
+				path={`${match.path}`}
+				render={(props) => <CollectionOverviewWithSpinner isLoading={isFetching} {...props} />}
+			/>
+			<Route
+				path={`/shop/:categoryId`}
+				render={(props) => <CategoryPageWithSpinner isLoading={!selectisCollectionLoaded} {...props} />}
+			/>
+		</div>
+	);
+};
 
 const mapStateToProps = createStructuredSelector({
 	isFetching: selectLoadingFetch,
